@@ -1,9 +1,14 @@
 <script>
-  import Counter from "./lib/Counter.svelte";
+  import StationsMap from "./lib/StationsMap.svelte";
+  import StationsTable from "./lib/StationsTable.svelte";
+  import stations from "./assets/stations.geo.json";
 </script>
 
-<main class="flex flex-col gap-4 m-4 items-center">
-  <h1 class="text-2xl font-title">Hello world!</h1>
-
-  <Counter />
+<main class="flex flex-row gap-2 p-2 items-center w-screen h-screen">
+  <section id="map" class="h-full grow">
+    <StationsMap {stations} />
+  </section>
+  <section id="table" class="h-full">
+    <StationsTable {stations} />
+  </section>
 </main>
