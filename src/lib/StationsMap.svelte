@@ -1,7 +1,7 @@
 <script>
   import * as d3 from "d3";
   import germanstates from "../assets/germanstates.json";
-
+  import { activeStation } from "./station.js";
   export let stations;
   export let padding = 10;
   $: projection = d3.geoMercator().fitExtent(
@@ -11,6 +11,10 @@
     ],
     germanstates
   );
+  function scrollTo(id) {
+    let element = document.getElementById(id);
+    element.scrollIntoView(true);
+  }
   let width = 0;
   let height = 0;
 
@@ -20,6 +24,15 @@
     var feature = feature;
     return feature.geometry.coordinates;
   }
+
+  function setActive(id) {
+    if (id === $activeStation) {
+      activeStation.set(null);
+    } else {
+      activeStation.set(id);
+      scrollTo(id);
+    }
+  }
 </script>
 
 <div class="w-full h-full" bind:clientWidth={width} bind:clientHeight={height}>
@@ -28,14 +41,26 @@
       <path d={path(feature)} stroke="black" fill="none" />
     {/each}
     {#each stations.features as feature}
-      <ellipse
+      {@const { id, name } = feature.properties}
+      <circle
+        class="active"
+        on:mousedown={() => setActive(feature.properties.id)}
+        style="transition: 200;"
         cx={projection(getStation(feature))[0]}
         cy={projection(getStation(feature))[1]}
         fill="red"
         stroke="none"
-        rx="2"
-        ry="2"
+        r={$activeStation === feature.properties.id ? 10 : 3}
       />
     {/each}
   </svg>
 </div>
+
+<style>
+  circle:hover {
+    cursor: pointer;
+  }
+  path:hover {
+    cursor: pointer;
+  }
+</style>

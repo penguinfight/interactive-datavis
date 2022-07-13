@@ -1,35 +1,45 @@
 <script>
+  import { activeStation } from "./station";
   export let stations;
-  let width = 0;
-  let height = 0;
+  function setActive(id) {
+    console.log($activeStation);
+    if (id === $activeStation) {
+        activeStation.set(null);
+        
+    } else {
+      activeStation.set(id);
+    }
+  }
 </script>
 
-<div class="w-full h-full" bind:clientWidth={width} bind:clientHeight={height}>
-  <table>
-    <tr>
+<div class="h-full">
+  <table id="table">
+    <tr style="background-color: #111111; color: #ffffff;">
       <th>Name</th>
       <th>State</th>
       <th>Height</th>
       <th>Coordinates</th>
     </tr>
-    <br />
+    <hr>
     {#each stations.features as feature}
-      <tr>
-        <td>
+      <tr id={feature.properties.id} on:mousedown={() => setActive(feature.properties.id)}>
+        <td class={$activeStation === feature.properties.id ? "active" : null}>
           {feature.properties.name}
         </td>
-        <td>
+        <td class={$activeStation === feature.properties.id ? "active" : null}>
           {feature.properties.state}
         </td>
-        <td>
+        <td class={$activeStation === feature.properties.id ? "active" : null}>
           {feature.properties.height}
         </td>
-        <td>
+        <td class={$activeStation === feature.properties.id ? "active" : null}>
           {feature.geometry.coordinates[0]}
           /
           {feature.geometry.coordinates[1]}
         </td>
       </tr>
+      <hr>
+
     {/each}
   </table>
 </div>
@@ -40,9 +50,19 @@
     font-size: 16px;
     padding: 5px;
   }
-  tr {
+  tr:nth-child(4n+1) {
+    background-color: #555555;
+    color: #ffffff;
   }
-  td{
+  tr:nth-child(4n+3) {
+    background-color: #222222;
+    color: #ffffff;
+  }
+  td {
     padding-left: 5px;
+  }
+  .active {
+    background-color: #999999;
+    color: black;
   }
 </style>
