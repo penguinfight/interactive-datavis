@@ -5,9 +5,13 @@
   import data from "./assets/data.csv?raw";
   import Chart from "./lib/Chart.svelte";
   import * as d3 from "d3";
-  import { activeStation } from "./lib/station";
+  import { activeStation, activeChart } from "./lib/station";
   $: width = 0;
+  const start = new Date(2022, 1, 1);
   const parseDate = d3.utcParse("%Y-%m-%d");
+  var chartSelection = "Temperature";
+  $: activeChart.set(chartSelection);
+  $: console.log($activeChart);
   var newdata = d3.csvParse(
     data,
     ({
@@ -61,7 +65,17 @@
       <section id="table" bind:clientWidth={width} class="h-full" style="overflow-y: scroll;">
         <StationsTable {stations} />
       </section>
-      <section id="chart" class="" style="min-height: 30%; padding-top: 20px; overflow: hidden; width: {width}px;">
+      <section
+        id="chart"
+        class=""
+        style="min-height: 30%; padding-top: 20px; overflow: hidden; width: {width}px;"
+      >
+        <form style="margin-left: 30%; margin-right: 30%; margin-top: -10px;">
+          <select id="chartSelection" bind:value={chartSelection} class="w-full">
+            <option value="Temperature"> Temperature</option>
+            <option value="Precipitation">Precipitation</option>
+          </select>
+        </form>
         {#if $activeStation}
           <Chart data={newdata.filter((d) => d.id === $activeStation)} />
         {/if}
